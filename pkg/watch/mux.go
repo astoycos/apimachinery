@@ -219,6 +219,8 @@ func (m *Broadcaster) Action(action EventType, obj runtime.Object) {
 // false if dropped.
 func (m *Broadcaster) ActionOrDrop(action EventType, obj runtime.Object) bool {
 	select {
+	case <-m.stopped:
+		return false
 	case m.incoming <- Event{action, obj}:
 		return true
 	default:
